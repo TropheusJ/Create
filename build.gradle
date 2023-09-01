@@ -158,6 +158,16 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven {
+        // location of the maven for EMI
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        // location of the maven for REI
+        name = "Shedaniel"
+        url = "https://maven.shedaniel.me/"
+    }
 
     mavenLocal()
     flatDir {
@@ -185,7 +195,21 @@ dependencies {
 
     compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
+
+    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-api-forge:${rei_version}")
+    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rei_version}")
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:$cloth_config_version")
+    implementation fg.deobf("dev.architectury:architectury-forge:$architectury_version")
+
+    compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
+
+    switch (recipe_viewer) {
+        case "none": break;
+        case "jei": runtimeOnly fg.deobf("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}"); break;
+        case "rei": runtimeOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:$rei_version"); break;
+        case "emi": runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}"); break;
+        default: println("Unknown recipe viewer: " + recipe_viewer)
+    }
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_minecraft_version}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_minecraft_version}-${curios_version}")
