@@ -27,20 +27,20 @@ base {
 // The project is named Flywheel-Forge, but sub-projects are named by folder.
 boolean flywheelInWorkspace = findProject(':Flywheel') != null
 
-boolean inMultiModWorkspace = rootProject.hasProperty('multiModWorkspace.enabled')
-boolean catnipInWorkspace = rootProject.hasProperty('multiModWorkspace.catnip')
-boolean ponderInWorkspace = rootProject.hasProperty('multiModWorkspace.ponder')
+def catnipProject = getParent() == null ? null : getParent().project("catnip")
+def ponderProject = getParent() == null ? null : getParent().project("Ponder")
 
-if (catnipInWorkspace) {
-    evaluationDependsOn(":catnip")
+if (catnipProject != null) {
+    evaluationDependsOn(catnipProject.path)
 }
 
-if (ponderInWorkspace) {
-    evaluationDependsOn(":Ponder")
+if (ponderProject != null) {
+    evaluationDependsOn(ponderProject.path)
 }
 
-project.logger.lifecycle("MultiModWorkspace ${inMultiModWorkspace || flywheelInWorkspace ? 'enabled' : 'disabled'} for project ${project.name}.")
-project.logger.lifecycle("Dependencies included in Workspace: [Flywheel: ${flywheelInWorkspace}], [Catnip: ${catnipInWorkspace}], [Ponder: ${ponderInWorkspace}]")
+project.logger.lifecycle("Create is using Flywheel from " + (flywheelInWorkspace ? "Project" : "Maven"))
+project.logger.lifecycle("Create is using Catnip from " + (catnipProject != null ? "Project" : "Maven"))
+project.logger.lifecycle("Create is using Ponder from " + (ponderProject != null ? "Project" : "Maven"))
 
 mixin {
     add sourceSets.main, 'create.refmap.json'
@@ -70,10 +70,10 @@ minecraft {
         configureEach {
             workingDirectory project.file('run')
 
-            if (inMultiModWorkspace)
-                ideaModule "createmod.Create.main"
-            else
-                ideaModule "Create.main"
+//            if (inMultiModWorkspace)
+//                ideaModule "createmod.Create.main"
+//            else
+//                ideaModule "Create.main"
 
             property 'forge.logging.console.level', 'info'
             jvmArgs '-XX:+IgnoreUnrecognizedVMOptions', '-XX:+AllowEnhancedClassRedefinition' // uncomment with jbr
@@ -91,17 +91,17 @@ minecraft {
                     source sourceSets.main
                 }
 
-                if (catnipInWorkspace) {
+                if (catnipProject != null) {
                     catnip {
-                        source project(":catnip:Common").sourceSets.main
-                        source project(":catnip:Forge").sourceSets.main
+                        source catnipProject.project("Common").sourceSets.main
+                        source catnipProject.project("Forge").sourceSets.main
                     }
                 }
 
-                if (ponderInWorkspace) {
+                if (ponderProject != null) {
                     ponder {
-                        source project(":Ponder:Common").sourceSets.main
-                        source project(":Ponder:Forge").sourceSets.main
+                        source ponderProject.project("Common").sourceSets.main
+                        source ponderProject.project("Forge").sourceSets.main
                     }
                 }
             }
@@ -225,16 +225,16 @@ dependencies {
         implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
     }
 
-    if (catnipInWorkspace) {
-        implementation project(":catnip:Common")
-        implementation project(":catnip:Forge")
+    if (catnipProject != null) {
+        implementation(catnipProject.project("Common")) { transitive = false }
+        implementation catnipProject.project("Forge")
     } else {
         implementation fg.deobf("net.createmod.catnip:Catnip-Forge-${minecraft_version}:${catnip_version}")
     }
 
-    if (ponderInWorkspace) {
-        implementation project(":Ponder:Common")
-        implementation project(":Ponder:Forge")
+    if (ponderProject != null) {
+        implementation(ponderProject.project("Common")) { transitive = false }
+        implementation ponderProject.project("Forge")
     } else {
         implementation fg.deobf("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
     }
