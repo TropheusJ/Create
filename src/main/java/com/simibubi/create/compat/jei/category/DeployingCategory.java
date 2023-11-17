@@ -37,7 +37,7 @@ public class DeployingCategory extends CreateRecipeCategory<DeployerApplicationR
 				.addSlot(RecipeIngredientRole.INPUT, 51, 5)
 				.setBackground(getRenderedSlot(), -1, -1)
 				.addIngredients(recipe.getRequiredHeldItem());
-		
+
 		List<ProcessingOutput> results = recipe.getRollableResults();
 		boolean single = results.size() == 1;
 		for (int i = 0; i < results.size(); i++) {
@@ -59,7 +59,7 @@ public class DeployingCategory extends CreateRecipeCategory<DeployerApplicationR
 	public void draw(DeployerApplicationRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
 		AllGuiTextures.JEI_SHADOW.render(matrixStack, 62, 57);
 		AllGuiTextures.JEI_DOWN_ARROW.render(matrixStack, 126, 29 + (recipe.getRollableResults().size() > 2 ? -19 : 0));
-		deployer.draw(matrixStack, getBackground().getWidth() / 2 - 13, 22);
+		deployer.draw(matrixStack, getBackground().width() / 2 - 13, 22);
 	}
 
 }

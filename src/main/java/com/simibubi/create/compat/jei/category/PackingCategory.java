@@ -80,8 +80,8 @@ public class PackingCategory extends BasinCategory {
 		HeatCondition requiredHeat = recipe.getRequiredHeat();
 		if (requiredHeat != HeatCondition.NONE)
 			heater.withHeat(requiredHeat.visualizeAsBlazeBurner())
-				.draw(matrixStack, getBackground().getWidth() / 2 + 3, 55);
-		press.draw(matrixStack, getBackground().getWidth() / 2 + 3, 34);
+				.draw(matrixStack, getBackground().width() / 2 + 3, 55);
+		press.draw(matrixStack, getBackground().width() / 2 + 3, 34);
 
 
 	}

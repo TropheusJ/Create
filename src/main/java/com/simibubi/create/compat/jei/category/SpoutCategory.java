@@ -115,7 +115,7 @@ public class SpoutCategory extends CreateRecipeCategory<FillingRecipe> {
 		AllGuiTextures.JEI_DOWN_ARROW.render(matrixStack, 126, 29);
 		spout.withFluids(recipe.getRequiredFluid()
 			.getMatchingFluidStacks())
-			.draw(matrixStack, getBackground().getWidth() / 2 - 13, 22);
+			.draw(matrixStack, getBackground().width() / 2 - 13, 22);
 	}
 
 }
